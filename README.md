@@ -18,25 +18,169 @@ not just a text description, when a visual is relevant.
 
 ## Setup
 
-```bash
-# 1. Clone and enter the repo
-git clone <repo-url>
-cd ashen-era
+## 🚀 Quick Start
 
-# 2. Create a virtual environment
+These instructions are written for a **first-time user or evaluator who has never used RAG before**. You do not need prior knowledge of RAG to run AshenLens.
+
+### 1. Prerequisites
+
+Install:
+
+- **Python 3.11 or newer**
+- **Ollama**
+- Internet connection for the initial Python package and model downloads
+
+AshenLens currently uses local Ollama models, so an external LLM API key is not required.
+
+### 2. Open the project
+
+Extract the project folder(AshenLens) and open PowerShell in it.
+
+Example:
+
+```powershell
+cd C:\AshenLens
+```
+
+Verify the project files:
+
+```powershell
+Get-ChildItem
+```
+
+You should see files/folders similar to:
+
+```text
+data
+docs
+src
+tests
+.env.example
+.gitignore
+README.md
+requirements.txt
+```
+
+### 3. Create a Python virtual environment
+
+```powershell
 python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+```
 
-# 3. Install dependencies
+Activate it:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+You should see:
+
+```text
+(.venv) PS C:\AshenLens>
+```
+
+If PowerShell blocks activation:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Then:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 4. Install Python dependencies
+
+```powershell
+python -m pip install --upgrade pip
 pip install -r requirements.txt
+```
 
-# 4. Configure environment variables
-cp .env.example .env
-# edit .env: add OPENROUTER_API_KEY (required), VOYAGE_API_KEY (optional)
-ollama signin                        # if not already
-ollama run gemma4:31b-cloud          # test it responds, then /bye
-ollama pull nomic-embed-text         # small local embedding model (~274MB)
-# 5. Place the official archive files under data/raw/ (read-only, do not modify)
+### 5. Install and prepare Ollama
+
+Verify Ollama:
+
+```powershell
+ollama --version
+```
+
+Download the text-generation model:
+
+```powershell
+ollama pull llama3.2:3b
+```
+
+Download the vision-language model:
+
+```powershell
+ollama pull qwen2.5vl:3b
+```
+
+Verify both:
+
+```powershell
+ollama list
+```
+
+If Ollama is not already running:
+
+```powershell
+ollama serve
+```
+
+If `ollama serve` occupies the terminal, open another PowerShell window and continue there.
+
+### 6. Configure the application
+
+Create the local environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+The local-model configuration should contain:
+
+```text
+EMBEDDING_BACKEND=local
+OLLAMA_MODEL=llama3.2:3b
+OLLAMA_VISION_MODEL=qwen2.5vl:3b
+```
+
+Do not commit private API keys or other secrets.
+
+### 7. Build the searchable archive
+
+Before asking questions, AshenLens needs to prepare the archive for retrieval.
+
+Run:
+
+```powershell
+python src\build_all.py
+```
+
+In simple terms, this step:
+
+1. Reads the archive.
+2. Extracts usable document content.
+3. Splits content into smaller searchable pieces called **chunks**.
+4. Creates numerical representations called **embeddings**.
+5. Builds the local search index.
+6. Associates relevant visual assets with retrieved content.
+
+The initial indexing step may take some time depending on the machine.
+
+### 8. Start AshenLens
+
+```powershell
+streamlit run src\app.py
+```
+
+Open the local address shown by Streamlit, normally:
+
+```text
+http://localhost:8501
 ```
 
 ## Running the pipeline
@@ -86,6 +230,158 @@ See `docs/decisions.md`. Highlights:
 - **Strict grounding** — the LLM only ever sees retrieved evidence, and is instructed
   to say "not enough evidence" rather than guess.
 
-## AI Usage
+## 🧩 Main Components
 
-Per competition rules, our AI usage disclosure and exported chat logs are in `ai_usage/`.
+### `src/ingest/`
+
+Responsible for processing source documents:
+
+```text
+docx_ingest.py
+pdf_ingest.py
+ocr_ingest.py
+```
+
+### `src/indexing/`
+
+Responsible for preparing content for retrieval:
+
+```text
+chunker.py
+embeddings.py
+vector_index.py
+build_all.py
+```
+
+General flow:
+
+```text
+Extracted content
+       ↓
+Chunking
+       ↓
+Embeddings
+       ↓
+Vector index
+```
+
+### `src/retrieval/`
+
+Responsible for finding useful evidence:
+
+```text
+hybrid_search.py
+```
+
+It combines multiple retrieval signals and gives visual evidence additional priority for visually oriented queries.
+
+### `src/generation/`
+
+Responsible for generating the final grounded response:
+
+```text
+answer.py
+```
+
+It handles text generation, vision-language generation, visual evidence selection, source citations, and multimodal prompts.
+
+### `src/app.py`
+
+The Streamlit application connecting:
+
+```text
+User
+ ↓
+Question
+ ↓
+Retrieval
+ ↓
+Evidence
+ ↓
+Generation
+ ↓
+Answer + Sources + Visual Evidence
+```
+
+## 🧪 Testing
+
+Run the automated tests:
+
+```powershell
+pytest
+```
+
+For evaluator testing, also manually test a normal text question and several visual/figure questions.
+
+## 🛠️ Troubleshooting
+
+### `python` is not recognized
+
+Check:
+
+```powershell
+python --version
+```
+
+Install Python 3.11+ and ensure it is available from the terminal.
+
+### Virtual environment does not activate
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+### `ollama` is not recognized
+
+Install Ollama and restart the terminal.
+
+```powershell
+ollama --version
+```
+
+### Model is missing
+
+```powershell
+ollama list
+```
+
+Then:
+
+```powershell
+ollama pull llama3.2:3b
+ollama pull qwen2.5vl:3b
+```
+
+### Search index is missing
+
+Run:
+
+```powershell
+python src\build_all.py
+```
+
+Then restart:
+
+```powershell
+streamlit run src\app.py
+```
+
+### Streamlit is not available
+
+Make sure `.venv` is active and run:
+
+```powershell
+pip install -r requirements.txt
+```
+
+## 🔐 Configuration and Secrets
+
+Create `.env` from `.env.example`:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Do not place private credentials or API keys in source files.
+
