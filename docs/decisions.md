@@ -1,32 +1,4 @@
-# Key Decisions Log
-
-Keep this updated as the team makes real technical choices — judges score
-"technical judgment & decisions" (10%) partly from this file.
-
-Format: one entry per decision, with the alternative considered and why it lost.
-
----
-
-## 2026-XX-XX — Hybrid search over pure vector search
-
-**Decision:** Combine BM25 keyword search with vector/semantic search via
-Reciprocal Rank Fusion, rather than relying on embeddings alone.
-
-**Why:** Sample questions reference near-identical proper nouns (e.g.
-"Thrice-Bound Edge" vs "Thrice-Bound Lantern"). Testing showed pure
-embedding search risks confusing these. BM25 anchors on the exact
-distinguishing keyword.
-
-**Alternative considered:** Pure vector search with a reranker model —
-rejected for now as added complexity/latency without solving the
-exact-keyword problem as directly.
-
----
-
-## 2026-XX-XX — [next decision]
-
-**Decision:**
-
-**Why:**
-
-**Alternative considered:**
+Key Technical Decisions
+•	Spatial Bounding-Box Extraction vs. Page Screenshots: We decided against displaying generic, full-page screenshots as visual evidence. Full pages overwhelm users and look cluttered on web interfaces. By engineering our pipeline to extract spatial bounding boxes.
+•	Hybrid Search with Reciprocal Rank Fusion (RRF): Early testing revealed that pure dense vector search struggled with exact, out-of-vocabulary fantasy names. We integrated a BM25 lexical index to capture exact keyword matches, fusing the scores with our ChromaDB semantic vectors to guarantee high recall for both lore concepts and specific entities.
+•	Cloud LLM over Local Inference: We initially explored using Ollama to run models locally and avoid API rate limits. However, we pivoted to the OpenRouter API. This ensured lightning-fast generation speeds during our live demonstration and prevented hardware bottlenecks on standard student laptops.
