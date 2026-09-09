@@ -1,0 +1,23 @@
+# --- Core ---
+streamlit
+python-dotenv
+requests
+
+# --- Ingestion ---
+pymupdf              # PDF text, images, page renders, bounding boxes
+python-docx           # DOCX parsing
+pytesseract            # OCR for scanned pages (requires tesseract-ocr installed on system)
+pillow
+opencv-python
+
+# --- Search / Retrieval ---
+chromadb
+rank-bm25
+
+# Only needed if EMBEDDING_BACKEND=local in .env (in-process, no server).
+# Not needed for the default "ollama" backend -- Ollama is called over HTTP
+# via `requests`, already listed above.
+sentence-transformers
+
+# --- Testing ---
+pytest
