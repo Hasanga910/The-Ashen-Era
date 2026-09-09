@@ -1,4 +1,4 @@
-﻿"""
+"""
 app.py
 ------
 AshenLens Streamlit UI. Ties together: hybrid retrieval -> grounded answer
@@ -25,10 +25,10 @@ import streamlit as st
 from src.generation.answer import generate_answer
 from src.retrieval.hybrid_search import BM25Index, hybrid_search
 
-st.set_page_config(page_title="AshenLens", page_icon="ðŸ”¥", layout="wide")
+st.set_page_config(page_title="AshenLens", layout="wide")
 
-st.title("ðŸ”¥ AshenLens")
-st.caption("Rich Answers, Not Just Text â€” Sub-track 1A, SLIIT Codefest 2026 AI Competition")
+st.title("AshenLens")
+st.caption("Spatially-Grounded Multimodal RAG on Ashen Era")
 
 
 @st.cache_resource
@@ -62,7 +62,7 @@ if st.button("Search", type="primary") and question:
 
     st.subheader("Sources")
     for chunk in evidence:
-        with st.expander(f"{chunk.get('source_file')} â€” page {chunk.get('page_number')}"):
+        with st.expander(f"{chunk.get('source_file')} — page {chunk.get('page_number')}"):
             st.write(chunk.get("text", ""))
 
             linked_image_id = chunk.get("linked_image_id")
@@ -73,11 +73,9 @@ if st.button("Search", type="primary") and question:
                 image_path = str(matches[0])
                 st.image(image_path, caption="Visual evidence (cropped)")
 
-                if st.checkbox("Inspect Source Context (show full page + highlight)", key=f"ctx_{chunk['chunk_id']}"):
+                if st.checkbox("Inspect Source Context (show full page + highlight)", key=f"ctx_{chunk.get('chunk_id')}"):
                     st.info(
-                        "TODO: render full page render with a translucent bbox "
-                        "overlay at the evidence location (see docs/architecture.md)."
+                        "Full-page context view with highlighted source region is coming soon."
                     )
 else:
     st.info("Type a question above and press Search to query the archive.")
-
