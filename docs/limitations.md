@@ -1,7 +1,2 @@
-# Known Limitations
-
-Keep this honest and updated — judges explicitly reward disclosed
-limitations and failed approaches over hidden gaps.
-
-- [ ] (fill in as testing surfaces real gaps, e.g. OCR accuracy on certain
-      scan types, retrieval failures on multi-hop-style questions, etc.)
+•	Failure - Tesseract OCR on Simulated Scans: We originally built an ocr_ingest.py script utilizing Tesseract to read the simulated 18th-century ephemera. During testing, the stylized fantasy fonts produced highly noisy, corrupted text. This noise actively degraded the precision of our BM25 index. 
+•	Strategic Limitation: Following this failure, we made the deliberate engineering choice to deprecate the OCR pipeline. As a result, purely image-based scanned ephemera lacking a hidden text layer cannot currently be searched lexically. We accepted this trade-off to prioritize zero-hallucination accuracy and high-fidelity visual grounding on the primary canonical texts (Codices, Novels, Wiki).
