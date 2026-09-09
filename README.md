@@ -11,10 +11,10 @@ not just a text description, when a visual is relevant.
 
 | Role | Member | Responsibility |
 |---|---|---|
-| Data / Extraction lead | TBD | PDF/DOCX/OCR extraction, metadata |
-| Search / ML lead | TBD | Chunking, embeddings, hybrid retrieval |
-| App / Integration lead | TBD | Streamlit UI, LLM calls, evidence display |
-| QA / Documentation lead | TBD | Testing, README, report, demo planning |
+| Document Ingestion Lead | Dunith Desitha Ranawansha | Owns `src/ingest/` (`pdf_ingest.py`, `docx_ingest.py`, deprecated `ocr_ingest.py`). Engineered the raw document processing pipeline for the enterprise corpus; implemented layout-aware extraction to capture text alongside precise spatial bounding-box coordinates for images and tables. |
+| Processing & Indexing Lead | Tharidi Pabasari Gamage | Owns `src/indexing/` (`chunker.py`, `embeddings.py`, `vector_index.py`, `build_all.py`). Architected the transformation of extracted content into searchable representations; designed the chunking strategy and mapped the embeddings pipeline into the ChromaDB vector store. |
+| Retrieval Lead | Sajana Hasanga | Owns `src/retrieval/` (`hybrid_search.py`). Engineered the core search engine for finding relevant evidence; implemented BM25 + dense vector retrieval integration, Reciprocal Rank Fusion (RRF), and visual-intent prioritization logic. |
+| Generation & Application Lead | Yasindu Sasmitha | Owns `src/generation/` (`answer.py`) and `src/app.py`. Transformed retrieved evidence into the final cited answer and built the interactive Streamlit UI; integrated Qwen vision handling, dynamic visual evidence selection, and deterministic citation fallback mechanisms for zero-hallucination outputs. |
 
 ## Setup
 
@@ -30,14 +30,11 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. System dependency for OCR (only needed for scanned pages)
-sudo apt-get install tesseract-ocr   # Ubuntu/Debian
-
-# 5. Configure environment variables
+# 4. Configure environment variables
 cp .env.example .env
 # edit .env: add OPENROUTER_API_KEY (required), VOYAGE_API_KEY (optional)
 
-# 6. Place the official archive files under data/raw/ (read-only, do not modify)
+# 5. Place the official archive files under data/raw/ (read-only, do not modify)
 ```
 
 ## Running the pipeline
