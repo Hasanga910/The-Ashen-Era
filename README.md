@@ -33,7 +33,9 @@ pip install -r requirements.txt
 # 4. Configure environment variables
 cp .env.example .env
 # edit .env: add OPENROUTER_API_KEY (required), VOYAGE_API_KEY (optional)
-
+ollama signin                        # if not already
+ollama run gemma4:31b-cloud          # test it responds, then /bye
+ollama pull nomic-embed-text         # small local embedding model (~274MB)
 # 5. Place the official archive files under data/raw/ (read-only, do not modify)
 ```
 
