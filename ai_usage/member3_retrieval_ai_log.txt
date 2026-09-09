@@ -1,0 +1,47 @@
+ASHEN ERA — AI USAGE DEVELOPMENT LOG
+Member 3 Hewa Nalagamage Sajana Hasanga — Retrieval
+Owned: src/retrieval/hybrid_search.py
+
+
+01. Retrieval problem:
+AI was used to discuss why exact-match retrieval and semantic retrieval complement each other in
+technical archives.
+
+Human decision: Keep both BM25 and vector search rather than relying on only one method.
+
+02. BM25:
+AI was used to discuss lightweight lexical indexing over processed chunks.
+
+Human decision: Build an in-memory BM25 index from the processed chunk JSON files and use lowercased
+whitespace tokenization.
+
+03. Vector search:
+AI was used to reason about connecting the retrieval layer to the ChromaDB query function.
+
+Human decision: Query ChromaDB for semantic candidates and retain their IDs, text, and metadata.
+
+04. RRF:
+AI was used to explain how to merge ranked lists with incompatible score scales.
+
+Human decision: Use Reciprocal Rank Fusion with k=60 and preserve complete chunk records during
+fusion.
+
+05. Visual intent:
+AI was used to explore how the system could distinguish ordinary factual questions from questions
+asking about an actual image or visual detail.
+
+Human decision: Detect visual-intent terms and, only for those queries, prioritize fused chunks that
+contain linked visual evidence.
+
+06. Edge cases:
+AI was used to identify the risk of visual evidence dominating questions where it is not needed.
+
+Human decision: Apply visual prioritization conditionally and preserve the remaining RRF-ranked text
+evidence.
+
+07. Validation:
+Test cases included lexical-focused, semantic-focused, and visual-intent questions. The team
+checked that source/page/image metadata survived retrieval.
+
+Final result:
+query -> BM25 + vector retrieval -> RRF -> visual-intent prioritization -> evidence

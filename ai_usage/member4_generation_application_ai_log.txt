@@ -1,0 +1,53 @@
+ASHEN ERA — AI USAGE DEVELOPMENT LOG
+Member 4 Yasindu Sasmitha— Generation & Application
+Owned: src/generation/answer.py, src/app.py
+
+
+01. Grounded generation:
+AI was used to discuss prompt structures that reduce unsupported answers.
+
+Human decision: Number retrieved evidence items and instruct the model to ground factual claims in
+the supplied evidence with inline citations.
+
+02. Visual evidence:
+AI was used to design the mapping between linked_image_id values and cropped visual files.
+
+Human decision: Resolve actual image files from data/visuals and supply relevant visual evidence to
+the vision-capable generation path for visual questions.
+
+03. Visual evidence filtering:
+AI was used to discuss how to avoid sending unrelated images.
+
+Human decision: Detect visual intent, prioritize visual chunks, and retain relevant same-source/page
+text where useful.
+
+04. Citation reliability:
+AI was used to reason about what happens when the model ignores citation instructions.
+
+Human decision: Validate citations, retry with a repair prompt when needed, and use deterministic
+citation fallback logic if valid citations are still missing.
+
+05. Model/API configuration:
+AI was used to compare practical local and hosted generation approaches.
+
+Human decision: Keep model configuration in environment variables. The current implementation
+supports an Ollama path and OpenRouter configuration; the exact runtime model is determined by the
+project environment.
+
+06. Streamlit:
+AI was used to discuss a simple evidence-aware UI.
+
+Human decision: Connect query input, hybrid retrieval, answer generation, citations, and visual
+evidence in Streamlit. Evidence is shown in expandable sections so users can inspect support for
+the answer.
+
+07. Validation:
+Questions with and without visual intent were tested. The team checked citation behavior, visual
+file resolution, and the no-visual-evidence path.
+
+08. Limitation recorded honestly:
+The current app contains a TODO for full-page rendering with a translucent bounding-box overlay.
+This is not claimed as a completed feature.
+
+Final result:
+retrieved evidence -> grounded generation -> citations -> visual evidence -> Streamlit response

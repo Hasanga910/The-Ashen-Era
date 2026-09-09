@@ -1,0 +1,40 @@
+ASHEN ERA — AI USAGE DEVELOPMENT LOG
+Member 2 Tharidi Pabasari Gamage — Processing & Indexing
+Owned: src/indexing/chunker.py, embeddings.py, vector_index.py, build_all.py
+
+
+01. Chunking:
+AI was used to compare fixed-size and provenance-aware chunking approaches.
+
+Human decision: Keep source filename and page number attached to each chunk and avoid losing the
+connection between text and visual evidence.
+
+02. Chunk metadata:
+AI was used to discuss how retrieval could later locate an image associated with a chunk.
+
+Human decision: Store linked_image_id alongside chunk_id, source_file, page_number, and text.
+
+03. Embeddings:
+AI was used to compare hosted and local embedding options.
+
+Human decision: Keep the backend configurable. The implementation supports Voyage AI, Ollama, and
+a local sentence-transformers fallback.
+
+04. ChromaDB:
+AI was used to discuss persistent vector storage and metadata.
+
+Human decision: Use a persistent ChromaDB collection named "ashen_era_chunks" and store chunk text,
+embeddings, IDs, and provenance metadata.
+
+05. Batch indexing:
+AI was used to identify practical issues with large vector-index operations.
+
+Human decision: Build the ChromaDB index in batches, with the current implementation using a default
+batch size of 500.
+
+06. Integration:
+The full path was checked from document processing through chunk JSON and vector-index creation.
+The team inspected whether retrieved records still contained the metadata required by retrieval.
+
+Final result:
+documents -> chunks -> embeddings -> persistent ChromaDB index

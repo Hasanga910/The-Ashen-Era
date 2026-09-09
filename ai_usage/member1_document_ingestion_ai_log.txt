@@ -1,0 +1,41 @@
+ASHEN ERA — AI USAGE DEVELOPMENT LOG
+Member 1 Dunith Desitha Ranawansha — Document Ingestion
+Owned: src/ingest/pdf_ingest.py, docx_ingest.py, ocr_ingest.py
+
+
+01. Problem: The archive contains mixed PDF/DOCX material, embedded visuals, and simulated scans.
+AI was used to discuss how to keep ingestion modular and preserve provenance.
+
+Human decision: Separate PDF, DOCX, and OCR handling instead of putting all logic in one module.
+
+02. PDF extraction:
+AI was used to discuss PyMuPDF page extraction, embedded-image handling, and spatial coordinates.
+
+Human decision: Use PyMuPDF; retain page text and image bounding boxes as (x0, y0, x1, y1);
+crop visual assets to PNG files; retain an image ID and nearby caption where available.
+
+03. OCR:
+AI was used to discuss avoiding unnecessary OCR on normal text PDFs.
+
+Human decision: Treat pages with very little extracted text as likely scanned and use OCR as a
+fallback. OCR is implemented separately with page rendering and pytesseract.
+
+04. DOCX:
+AI was used to discuss extracting paragraphs, tables, and embedded media while keeping the
+implementation independent from PDF processing.
+
+Human decision: Use python-docx and preserve source information; save embedded media as visual
+assets.
+
+05. Provenance:
+AI was asked how the visual assets could later be connected to retrieved text.
+
+Human decision: Carry visual IDs and source/page metadata forward so retrieval can resolve a chunk
+to the corresponding visual file.
+
+06. Validation:
+The implementation was checked by inspecting extracted text, generated visual files, and page
+metadata. Edge cases were reviewed before handing the output to indexing.
+
+Final result:
+raw documents -> extracted text/pages + visual assets + spatial metadata
